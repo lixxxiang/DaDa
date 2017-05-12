@@ -42,10 +42,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static Context context;
     public static BitmapDescriptor mIconLocation;
     public static MyLocationConfiguration.LocationMode locationMode;
-    public static MapStatus mapStatus;
     public static MainActivity mainActivity;
     private MyLocationListenner mlistener;
-    public static MyOrientationListener myOrientationListener;
+//    public static MyOrientationListener myOrientationListener;
     private float mCurrentX;
     private MapStatusUpdate mapStatusUpdate;
     private Button hideButton;
@@ -60,6 +59,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainActivity = this;
         initToolbarAndNavigationView();
         mapView = (MapView) findViewById(R.id.bmapView);
+        /**
+         * 去掉缩放按键
+         */
+        mapView.showZoomControls(false);
+
         Utils.checkPermission();
         initLocation();
         setLocation();
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onStart() {
         super.onStart();
-        myOrientationListener.start();
+//        myOrientationListener.start();
     }
 
     @Override
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onDestroy();
         baiduMap.setMyLocationEnabled(false);
         mapView.onDestroy();
-        myOrientationListener.stop();
+//        myOrientationListener.stop();
     }
     @Override
     protected void onResume() {
@@ -103,16 +107,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mlocationClient.setLocOption(mOption);
         mlocationClient.start();
         BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_marker, options);
-        bitmap = rotateBitmap(icon_format(bitmap, 100, 100), 330);
-        mIconLocation = BitmapDescriptorFactory.fromBitmap(bitmap);
-        myOrientationListener = new MyOrientationListener(MainActivity.mainActivity);
-        myOrientationListener.setOnOrientationListener(new MyOrientationListener.OnOrientationListener() {
-            @Override
-            public void onOrientationChanged(float x) {
-                mCurrentX = x;
-            }
-        });
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_focus_marka, options);
+//        bitmap = rotateBitmap(icon_format(bitmap, 100, 100), 330);
+        mIconLocation = BitmapDescriptorFactory.fromBitmap(icon_format(bitmap, 75, 120));
+//        myOrientationListener = new MyOrientationListener(MainActivity.mainActivity);
+//        myOrientationListener.setOnOrientationListener(new MyOrientationListener.OnOrientationListener() {
+//            @Override
+//            public void onOrientationChanged(float x) {
+//                mCurrentX = x;
+//            }
+//        });
     }
 
     private void setLocation(){
@@ -261,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public void onReceiveLocation(BDLocation bdLocation) {
             MyLocationData data = new MyLocationData.Builder()
                     .direction(mCurrentX)
-                    .accuracy(bdLocation.getRadius())
+                    .accuracy(0)
                     .latitude(bdLocation.getLatitude())
                     .longitude(bdLocation.getLongitude())
                     .build();
